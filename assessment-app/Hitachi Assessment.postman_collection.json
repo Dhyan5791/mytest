@@ -1,0 +1,244 @@
+{
+  "info": {
+    "_postman_id": "f64a9344-eb90-4f8a-9cdb-6e892d0e9c7d",
+    "name": "Hitachi Assessment",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "24350789"
+  },
+  "item": [
+    {
+      "name": "login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "let json;\r",
+              "try {\r",
+              "    json = pm.response.json();\r",
+              "} catch (e) {\r",
+              "    pm.test(\"Response is JSON\", function () {\r",
+              "        pm.expect.fail(\"Response is not valid JSON\");\r",
+              "    });\r",
+              "    return;\r",
+              "}\r",
+              "\r",
+              "/**\r",
+              " * Adjust this section to match your actual response.\r",
+              " * Try these in order, or set `token` directly from the real path.\r",
+              " */\r",
+              "let token =\r",
+              "    json.access_token ||\r",
+              "    json.token ||\r",
+              "    (json.data && (json.data.access_token || json.data.token)) ||\r",
+              "    (json.result && json.result.token);\r",
+              "\r",
+              "// Optional: if your token is at a custom path, set it explicitly, e.g.:\r",
+              "// let token = json.data.jwt;\r",
+              "\r",
+              "pm.test(\"Token exists in response\", function () {\r",
+              "    pm.expect(token, \"token must be present in response\").to.be.a(\"string\");\r",
+              "});\r",
+              "\r",
+              "// Save token as a collection variable so all requests in this collection can use it\r",
+              "pm.collectionVariables.set(\"authToken\", token);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"login\": \"admin\",\r\n  \"password\": \"password\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/auth/login",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "auth",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All users",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{authToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/users",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create User",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{authToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"username\": \"user2\",\r\n  \"email\": \"user2@mail.com\",\r\n  \"password\": \"user123\",\r\n  \"roleIds\": [2]\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/users",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Transaction",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{authToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"customerId\": 2,\r\n  \"paymentMethodId\": 1,\r\n  \"items\": [\r\n    { \"productId\": 1, \"qty\": 2 },\r\n    { \"productId\": 3, \"qty\": 1 }\r\n  ]\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/transactions",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "transactions"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Report",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{authToken}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": ""
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/reports/products/total-spent?startDate=2026-02-01T00:00:00&endDate=2026-02-28T23:59:59",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "reports",
+            "products",
+            "total-spent"
+          ],
+          "query": [
+            {
+              "key": "startDate",
+              "value": "2026-02-01T00:00:00"
+            },
+            {
+              "key": "endDate",
+              "value": "2026-02-28T23:59:59"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "authToken",
+      "value": ""
+    }
+  ]
+}
